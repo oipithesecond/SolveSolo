@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "SolveSolo",
+    "version": "1.0",
+    "description": "Blocks AI sites while practicing DSA",
+    "permissions": [
+      "tabs",
+      "storage",
+      "webNavigation"
+    ],
+    "background": {
+      "scripts": ["background.js"]
+    }
+  }
