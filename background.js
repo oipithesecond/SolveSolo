@@ -8,7 +8,6 @@ const AI_DOMAINS = [
     "perplexity.ai",
     "copilot.microsoft.com"
 ];
-const BLOCK_DURATION_MS = 20 * 60 * 1000; // 20 minutes
 
 //if a url contains any of the domains
 const matches = (url, domains) => domains.some(domain => url.includes(domain));
@@ -20,11 +19,18 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
     //check for trigger
     if (matches(tab.url, TRIGGER_DOMAINS)) {
-        const targetTime = Date.now() + BLOCK_DURATION_MS;
+        //get block duration from storage
+        const settings = await browser.storage.local.get("blockDuration");
+        const durationMinutes = settings.blockDuration || 20; 
+        
+        const targetTime = Date.now() + (durationMinutes * 60 * 1000);
         
         //save the unlock time to storage
-        await browser.storage.local.set({ unlockTime: targetTime });
-        console.log(`Focus Mode Activated! AI blocked until: ${new Date(targetTime).toLocaleTimeString()}`);
+        const currentData = await browser.storage.local.get("unlockTime");
+        if (!currentData.unlockTime || targetTime > currentData.unlockTime) {
+            await browser.storage.local.set({ unlockTime: targetTime });
+            console.log(`Focus Mode: Blocked for ${durationMinutes} mins`);
+        }
     }
 
     //check for AI sites
