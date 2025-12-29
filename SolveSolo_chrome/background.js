@@ -21,8 +21,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 //blocker for AI sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tab.url && AI_DOMAINS.some(d => tab.url.includes(d))) {
-        checkAndBlock(tabId);
+    if (tab.url) {
+        checkAndBlock(tabId, tab.url);
     }
 });
 

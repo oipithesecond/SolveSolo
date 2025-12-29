@@ -1,3 +1,20 @@
+document.addEventListener('DOMContentLoaded', () => {
+    //setting button logic
+    const settingsBtn = document.getElementById('settings-btn');
+    
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => { 
+            if (chrome.runtime.openOptionsPage) {
+                chrome.runtime.openOptionsPage();
+            } else {
+                //fallback:manually open options page
+                window.open(chrome.runtime.getURL('options.html'));
+            }
+        });
+    } else {
+        console.error("Could not find the settings button!");
+    }
+
 function updateTimer() {
     chrome.storage.local.get(["unlockTime"], (result) => {
         const unlockTime = result.unlockTime || 0;
@@ -19,3 +36,5 @@ function updateTimer() {
 
 updateTimer();
 setInterval(updateTimer, 1000);
+
+});

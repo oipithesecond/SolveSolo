@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
-<body style="width: 200px; text-align: center; font-family: sans-serif; padding: 10px;">
-    <h3>Focus Status</h3>
-    <div id="timer" style="font-size: 2rem; font-weight: bold; color: #444;">--:--</div>
-    <p id="message" style="font-size: 0.9rem; color: #666;">Checking...</p>
+<head>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="header">
+        <h3>Focus Mode</h3>
+        <button id="settings-btn" title="Settings">⚙️</button>
+    </div>
+
+    <div id="timer">--:--</div>
+    <p id="message">Checking status...</p>
+
     <script src="popup.js"></script>
 </body>
 </html>
