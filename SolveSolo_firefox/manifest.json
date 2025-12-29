@@ -12,7 +12,11 @@
       "scripts": ["background.js"]
     },
     "action": {
-        "default_popup": "popup.html",
-        "default_title": "Check Focus Timer"
-    }
+      "default_popup": "popup.html",
+      "default_title": "Focus Timer"
+    },
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": false
+  }
   }

@@ -1,4 +1,4 @@
-// Configuration
+//config
 const TRIGGER_DOMAINS = ["leetcode.com", "geeksforgeeks.org"];
 const AI_DOMAINS = [
     "chatgpt.com",
@@ -8,12 +8,13 @@ const AI_DOMAINS = [
     "perplexity.ai",
     "copilot.microsoft.com"
 ];
+const YOUTUBE_DOMAIN = "youtube.com";
 
 //listener for trigger Sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url) {
         if (TRIGGER_DOMAINS.some(d => tab.url.includes(d))) {
-            activateFocusMode();
+            activateTimer();
         }
     }
 });
@@ -26,28 +27,43 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 //activate focus mode
-function activateFocusMode() {
-    chrome.storage.local.get(["unlockTime"], (result) => {
+function activateTimer() {
+    chrome.storage.local.get(['unlockTime', 'blockDuration'], (data) => {
         const now = Date.now();
-        //if timer is already running and in the future, don't reset it
-        if (result.unlockTime && result.unlockTime > now) {
-            return; 
-        }
+        //if timer is already running, don't overwrite it
+        if (data.unlockTime && data.unlockTime > now) return;
 
-        //set unlock time 20 mins from now
-        const unlockTime = now + (20 * 60 * 1000);
+        //use custom duration (default 20 mins)
+        const minutes = data.blockDuration || 20;
+        const unlockTime = now + (minutes * 60 * 1000);
+
         chrome.storage.local.set({ unlockTime: unlockTime });
-        
-        //create an alarm to clean up later
-        chrome.alarms.create("focusTimer", { when: unlockTime });
-        console.log("Focus Mode Activated.");
+        console.log(`Focus Mode: Blocked for ${minutes} mins`);
     });
 }
 
 //check if blocked
-function checkAndBlock(tabId) {
-    chrome.storage.local.get(["unlockTime"], (result) => {
-        if (result.unlockTime && Date.now() < result.unlockTime) {
+function checkAndBlock(tabId, url) {
+    chrome.storage.local.get(['unlockTime', 'blockYoutube'], (data) => {
+        const now = Date.now();
+        const unlockTime = data.unlockTime || 0;
+
+        //if time is up do nothing
+        if (now > unlockTime) return;
+
+        let shouldBlock = false;
+
+        //AI checker
+        if (AI_DOMAINS.some(d => url.includes(d))) {
+            shouldBlock = true;
+        }
+
+        //youtube checker
+        if (url.includes(YOUTUBE_DOMAIN) && data.blockYoutube) {
+            shouldBlock = true;
+        }
+
+        if (shouldBlock) {
             chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked.html") });
         }
     });

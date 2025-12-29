@@ -12,6 +12,11 @@
       "service_worker": "background.js"
     },
     "action": {
-        "default_popup": "popup.html"
+      "default_popup": "popup.html",
+      "default_title": "Focus Timer"
+    },
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": false
     }
   }
