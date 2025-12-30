@@ -66,7 +66,7 @@ function checkAndBlock(tabId, url) {
         }
 
         if (shouldBlock) {
-            chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked.html") });
+            chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked/blocked.html") });
         }
     });
 }
