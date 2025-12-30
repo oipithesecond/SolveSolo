@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.runtime.openOptionsPage();
             } else {
                 //fallback:manually open options page
-                window.open(chrome.runtime.getURL('options.html'));
+                window.open(chrome.runtime.getURL("options/options.html"));
             }
         });
     } else {
@@ -22,14 +22,30 @@ function updateTimer() {
         const timeLeft = unlockTime - now;
 
         const timerElement = document.getElementById("timer");
-
+        const msgElement = document.getElementById("message");
+        
+        //active mode
         if (timeLeft > 0) {
+            document.body.classList.add("active-mode");
+            
             const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
             const seconds = Math.floor((timeLeft / 1000) % 60);
             timerElement.innerText = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            msgElement.innerText = "Good luck on your problem!";
         } else {
-            timerElement.innerText = "00:00";
+            //idle mode
+            document.body.classList.remove("active-mode");
+
+            if (timerElement) {
+                timerElement.innerText = "00:00";
+                timerElement.style.color = "#444"; // Reset to dark grey
+            }
+            if (msgElement) {
+                msgElement.innerText = "Ready when you are.";
+                msgElement.style.color = "#666";
+            }
         }
     });
 }

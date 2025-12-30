@@ -1,5 +1,7 @@
 //config
-const TRIGGER_DOMAINS = ["leetcode.com", "geeksforgeeks.org"];
+const TRIGGER_DOMAINS = ["leetcode.com/problems",
+                         "geeksforgeeks.org/problems",
+                        ];
 const AI_DOMAINS = [
     "chatgpt.com",
     "claude.ai",
@@ -64,7 +66,7 @@ function checkAndBlock(tabId, url) {
         }
 
         if (shouldBlock) {
-            chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked.html") });
+            chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked/blocked.html") });
         }
     });
 }
