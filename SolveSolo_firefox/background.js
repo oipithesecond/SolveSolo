@@ -1,5 +1,7 @@
 //config
-const TRIGGER_DOMAINS = ["leetcode.com", "geeksforgeeks.org"];
+const TRIGGER_DOMAINS = ["leetcode.com/problems",
+                         "geeksforgeeks.org/problems",
+                        ];
 const AI_DOMAINS = [
     "chatgpt.com",
     "claude.ai",
