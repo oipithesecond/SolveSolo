@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.runtime.openOptionsPage();
             } else {
                 //fallback:manually open options page
-                window.open(chrome.runtime.getURL('options.html'));
+                window.open(chrome.runtime.getURL("options/options.html"));
             }
         });
     } else {

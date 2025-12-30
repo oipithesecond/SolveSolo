@@ -12,11 +12,14 @@
       "service_worker": "background.js"
     },
     "action": {
-      "default_popup": "popup.html",
-      "default_title": "SolveSolo"
+      "default_popup": "popup/popup.html",
+      "default_title": "SolveSolo",
+      "default_icon": {
+        "128": "icons/solvesolo128.png"
+      }
     },
     "options_ui": {
-      "page": "options.html",
+      "page": "options/options.html",
       "open_in_tab": false
     }
   }
