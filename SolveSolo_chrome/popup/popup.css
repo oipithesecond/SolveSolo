@@ -48,3 +48,32 @@ h3 { margin: 0; font-size: 1rem; }
     color: #666;
     text-align: center;
 }
+
+body.active-mode {
+    background-color: #2e7d32; /* Nice dark green */
+    color: white;
+    transition: background-color 0.3s ease; /* Smooth fade */
+}
+
+/* Force elements to be white when active */
+body.active-mode #timer {
+    color: white !important;
+}
+
+body.active-mode #message {
+    color: #e8f5e9 !important; /* Very light green text */
+    font-weight: bold;
+}
+
+body.active-mode .header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.active-mode #settings-btn {
+    filter: invert(1) brightness(100); /* Turns the black gear icon white */
+}
+
+/* Hide the settings gear when Active Mode is on */
+body.active-mode #settings-btn {
+    display: none;
+}
