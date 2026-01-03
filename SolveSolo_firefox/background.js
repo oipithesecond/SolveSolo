@@ -70,3 +70,17 @@ function checkAndBlock(tabId, url) {
         }
     });
 }
+
+//time penalty handler
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "TEST_CASE_FAILED") {
+        chrome.storage.local.get(["unlockTime"], (data) => {
+            //add time if the timer is currently running
+            if (data.unlockTime && data.unlockTime > Date.now()) {
+                const newTime = data.unlockTime + (5 * 60 * 1000); //5 mins
+                chrome.storage.local.set({ unlockTime: newTime });
+                console.log("Test Failed. +5 Minutes added.");
+            }
+        });
+    }
+});

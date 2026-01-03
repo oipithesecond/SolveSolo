@@ -21,5 +21,18 @@
     "options_ui": {
       "page": "options/options.html",
       "open_in_tab": false
-    }
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://*.leetcode.com/*"],
+        "js": ["content/leetcode.js"],
+        "run_at": "document_idle"
+      },
+      {
+        "matches": ["*://*.geeksforgeeks.org/*"],
+        "js": ["content/gfg.js"],
+        "run_at": "document_idle"
+      }
+    ]
+    
   }
