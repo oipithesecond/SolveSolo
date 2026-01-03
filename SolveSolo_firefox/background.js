@@ -39,7 +39,12 @@ function activateTimer() {
         const minutes = data.blockDuration || 20;
         const unlockTime = now + (minutes * 60 * 1000);
 
-        chrome.storage.local.set({ unlockTime: unlockTime });
+        //set penaltyMode to false for a normal session
+        chrome.storage.local.set({ 
+            unlockTime: unlockTime,
+            penaltyMode: false 
+        });
+
         console.log(`Focus Mode: Blocked for ${minutes} mins`);
     });
 }
@@ -74,12 +79,20 @@ function checkAndBlock(tabId, url) {
 //time penalty handler
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "TEST_CASE_FAILED") {
-        chrome.storage.local.get(["unlockTime"], (data) => {
-            //add time if the timer is currently running
-            if (data.unlockTime && data.unlockTime > Date.now()) {
-                const newTime = data.unlockTime + (5 * 60 * 1000); //5 mins
-                chrome.storage.local.set({ unlockTime: newTime });
-                console.log("Test Failed. +5 Minutes added.");
+        //do not stack time.
+        chrome.storage.local.get(["unlockTime", "penaltyMode"], (data) => {
+            const now = Date.now();
+            const isTimerRunning = data.unlockTime && data.unlockTime > now;
+
+            //run if the timer is off
+            if (!isTimerRunning) {
+                console.log("Timer finished. Wrong Answer detected. Starting Penalty...");
+                const penaltyTime = now + (5 * 60 * 1000); // 5 Minutes
+                
+                chrome.storage.local.set({
+                    unlockTime: penaltyTime,
+                    penaltyMode: true 
+                });
             }
         });
     }

@@ -50,7 +50,7 @@ h3 { margin: 0; font-size: 1rem; }
 }
 
 body.active-mode {
-    background-color: #2e7d32; /* Nice dark green */
+    background-color: #2e7d32; /* dark green */
     color: white;
     transition: background-color 0.3s ease; /* Smooth fade */
 }
@@ -76,4 +76,14 @@ body.active-mode #settings-btn {
 /* Hide the settings gear when Active Mode is on */
 body.active-mode #settings-btn {
     display: none;
+}
+
+body.penalty-mode {
+    background-color: #e65100; /* Dark Orange */
+}
+
+body.penalty-mode #message {
+    color: #fff3e0 !important; /* Light Orange Text */
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
 }
