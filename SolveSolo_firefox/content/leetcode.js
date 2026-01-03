@@ -1,6 +1,5 @@
-let isPenalized = false;
+let errorAlreadyCounted = false;
 
-//exact phrases that trigger a penalty
 const FAILURE_KEYWORDS = [
     "Wrong Answer",
     "Time Limit Exceeded",
@@ -9,25 +8,26 @@ const FAILURE_KEYWORDS = [
     "Compile Error"
 ];
 
-const observer = new MutationObserver((mutations) => {
-    //don't run if we just penalized
-    if (isPenalized) return;
-
-    //scan visible text on the page
+const observer = new MutationObserver(() => {
     const bodyText = document.body.innerText;
+    
+    //failure keyword is currently on screen check
+    const isErrorVisible = FAILURE_KEYWORDS.some(keyword => bodyText.includes(keyword));
+    const isRealResult = bodyText.includes("Details") || bodyText.includes("Testcase");
 
-    //check if any failure keyword exists
-    const hasFailure = FAILURE_KEYWORDS.some(keyword => bodyText.includes(keyword));
-    const isRealResult = bodyText.includes("Details") || bodyText.includes("Testcase"); 
-
-    if (hasFailure && isRealResult) {
-        chrome.runtime.sendMessage({ action: "TEST_CASE_FAILED" });
-        
-        //lock for 10 seconds
-        isPenalized = true;
-        setTimeout(() => { isPenalized = false; }, 10000);
+    if (isErrorVisible && isRealResult) {
+        //error on screen
+        if (!errorAlreadyCounted) {
+            //penalize
+            console.log("New error detected. Sending penalty...");
+            chrome.runtime.sendMessage({ action: "TEST_CASE_FAILED" });
+            
+            //mark as counted
+            errorAlreadyCounted = true;
+        }
+    } else {
+        errorAlreadyCounted = false;
     }
 });
 
-//observe everything
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
