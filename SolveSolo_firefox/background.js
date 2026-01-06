@@ -21,9 +21,20 @@ const YOUTUBE_DOMAIN = "youtube.com";
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url) {
         if (TRIGGER_DOMAINS.some(d => tab.url.includes(d))) {
-            activateTimer();
+            activateTimer(tabId);
         }
     }
+});
+
+//remove from tab sessions on close
+chrome.tabs.onRemoved.addListener((tabId) => {
+    chrome.storage.local.get(['activeSessions'], (data) => {
+        const sessions = data.activeSessions || {};
+        if (sessions[tabId]) {
+            delete sessions[tabId];
+            chrome.storage.local.set({ activeSessions: sessions });
+        }
+    });
 });
 
 //blocker for AI sites
@@ -34,8 +45,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 //activate focus mode
-function activateTimer() {
-    chrome.storage.local.get(['unlockTime', 'blockDuration'], (data) => {
+function activateTimer(tabId) {
+    // --- CHANGED: Check storage instead of Set ---
+    chrome.storage.local.get(['unlockTime', 'blockDuration', 'activeSessions'], (data) => {
+        const sessions = data.activeSessions || {};
+
+        // 1. CHECK: If this tab is already in our storage list, STOP.
+        if (sessions[tabId]) {
+            return; 
+        }
+
+        // 2. MARK: Add tab to storage immediately
+        sessions[tabId] = true;
+        chrome.storage.local.set({ activeSessions: sessions });
+
+        // 3. START TIMER LOGIC
         const now = Date.now();
         //if timer is already running, don't overwrite it
         if (data.unlockTime && data.unlockTime > now) return;
@@ -84,15 +108,19 @@ function checkAndBlock(tabId, url) {
 //time penalty handler
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "TEST_CASE_FAILED") {
+        
+        // Fetch penalty duration
         chrome.storage.local.get(["unlockTime", "penaltyMode", "penaltyDuration"], (data) => {
             const now = Date.now();
             const isTimerRunning = data.unlockTime && data.unlockTime > now;
 
-            //run if the timer is off
+            // Only run if the timer has FINISHED (is off)
             if (!isTimerRunning) {
-                console.log("Timer finished. Wrong Answer detected. Starting Penalty...");
-                const penaltyMinutes = (data.penaltyDuration !== undefined) ? data.penaltyDuration : 5;
+                console.log("Timer finished. Wrong Answer detected.");
                 
+                // Get custom penalty (default 5)
+                const penaltyMinutes = (data.penaltyDuration !== undefined) ? data.penaltyDuration : 5;
+
                 if (penaltyMinutes > 0) {
                     const penaltyTime = now + (penaltyMinutes * 60 * 1000);
                     
@@ -100,7 +128,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                         unlockTime: penaltyTime,
                         penaltyMode: true 
                     });
-                    console.log(`Starting Penalty: ${penaltyMinutes} mins`);
                 }
             }
         });

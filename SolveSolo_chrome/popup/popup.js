@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (chrome.runtime.openOptionsPage) {
                 chrome.runtime.openOptionsPage();
             } else {
-                //fallback:manually open options page
-                window.open(chrome.runtime.getURL('options.html'));
+                //fallback: manually open options page
+                window.open(chrome.runtime.getURL('options/options.html'));
             }
         });
     } else {
@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 function updateTimer() {
-    chrome.storage.local.get(["unlockTime"], (result) => {
+    chrome.storage.local.get(["unlockTime", "penaltyMode"], (result) => {
         const unlockTime = result.unlockTime || 0;
+        const isPenalty = result.penaltyMode || false; // NEW
         const now = Date.now();
         const timeLeft = unlockTime - now;
 
@@ -27,20 +28,28 @@ function updateTimer() {
         //active mode
         if (timeLeft > 0) {
             document.body.classList.add("active-mode");
+
+            if (isPenalty) {
+                document.body.classList.add("penalty-mode");
+                msgElement.innerText = "Debug your error solo!";
+            } else {
+                document.body.classList.remove("penalty-mode");
+                msgElement.innerText = "Good luck on your problem!";
+            }
             
             const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
             const seconds = Math.floor((timeLeft / 1000) % 60);
             timerElement.innerText = 
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-            msgElement.innerText = "Good luck on your problem!";
         } else {
             //idle mode
             document.body.classList.remove("active-mode");
+            document.body.classList.remove("penalty-mode");
 
             if (timerElement) {
                 timerElement.innerText = "00:00";
-                timerElement.style.color = "#444"; // Reset to dark grey
+                timerElement.style.color = "#444";
             }
             if (msgElement) {
                 msgElement.innerText = "Ready when you are.";

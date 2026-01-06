@@ -8,7 +8,12 @@ const AI_DOMAINS = [
     "gemini.google.com", 
     "deepseek.com",
     "perplexity.ai",
-    "copilot.microsoft.com"
+    "copilot.microsoft.com",
+    "qwen.ai",
+    "mistral.ai",
+    "meta.ai",
+    "grok.com",
+    "ai.baidu.com"
 ];
 const YOUTUBE_DOMAIN = "youtube.com";
 
@@ -39,7 +44,12 @@ function activateTimer() {
         const minutes = data.blockDuration || 20;
         const unlockTime = now + (minutes * 60 * 1000);
 
-        chrome.storage.local.set({ unlockTime: unlockTime });
+        //set penaltyMode to false for a normal session
+        chrome.storage.local.set({ 
+            unlockTime: unlockTime,
+            penaltyMode: false 
+        });
+
         console.log(`Focus Mode: Blocked for ${minutes} mins`);
     });
 }
@@ -70,3 +80,29 @@ function checkAndBlock(tabId, url) {
         }
     });
 }
+
+//time penalty handler
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "TEST_CASE_FAILED") {
+        chrome.storage.local.get(["unlockTime", "penaltyMode", "penaltyDuration"], (data) => {
+            const now = Date.now();
+            const isTimerRunning = data.unlockTime && data.unlockTime > now;
+
+            //run if the timer is off
+            if (!isTimerRunning) {
+                console.log("Timer finished. Wrong Answer detected. Starting Penalty...");
+                const penaltyMinutes = (data.penaltyDuration !== undefined) ? data.penaltyDuration : 5;
+                
+                if (penaltyMinutes > 0) {
+                    const penaltyTime = now + (penaltyMinutes * 60 * 1000);
+                    
+                    chrome.storage.local.set({
+                        unlockTime: penaltyTime,
+                        penaltyMode: true 
+                    });
+                    console.log(`Starting Penalty: ${penaltyMinutes} mins`);
+                }
+            }
+        });
+    }
+});

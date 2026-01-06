@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const blockYoutube = document.getElementById('blockYoutube').checked;
 
         //validation
-        if (isNaN(duration) || duration < 15) {
+        if (isNaN(duration) || duration < 2) {
             showError("Block Duration cannot be less than 15 minutes.");
             return;
         }
