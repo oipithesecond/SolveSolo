@@ -109,16 +109,16 @@ function checkAndBlock(tabId, url) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "TEST_CASE_FAILED") {
         
-        // Fetch penalty duration
+        //fetch penalty duration
         chrome.storage.local.get(["unlockTime", "penaltyMode", "penaltyDuration"], (data) => {
             const now = Date.now();
             const isTimerRunning = data.unlockTime && data.unlockTime > now;
 
-            // Only run if the timer has FINISHED (is off)
+            //only run if the timer has FINISHED (is off)
             if (!isTimerRunning) {
                 console.log("Timer finished. Wrong Answer detected.");
                 
-                // Get custom penalty (default 5)
+                //get custom penalty (default 5)
                 const penaltyMinutes = (data.penaltyDuration !== undefined) ? data.penaltyDuration : 5;
 
                 if (penaltyMinutes > 0) {
