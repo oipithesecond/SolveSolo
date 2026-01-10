@@ -46,20 +46,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 //activate focus mode
 function activateTimer(tabId) {
-    // --- CHANGED: Check storage instead of Set ---
     chrome.storage.local.get(['unlockTime', 'blockDuration', 'activeSessions'], (data) => {
         const sessions = data.activeSessions || {};
 
-        // 1. CHECK: If this tab is already in our storage list, STOP.
         if (sessions[tabId]) {
             return; 
         }
 
-        // 2. MARK: Add tab to storage immediately
+        //add tab to storage
         sessions[tabId] = true;
         chrome.storage.local.set({ activeSessions: sessions });
 
-        // 3. START TIMER LOGIC
+        //start timer
         const now = Date.now();
         //if timer is already running, don't overwrite it
         if (data.unlockTime && data.unlockTime > now) return;
@@ -87,20 +85,21 @@ function checkAndBlock(tabId, url) {
         //if time is up do nothing
         if (now > unlockTime) return;
 
-        let shouldBlock = false;
+        let redirectTarget = null;
 
-        //AI checker
+        //standard block page
         if (AI_DOMAINS.some(d => url.includes(d))) {
-            shouldBlock = true;
+            redirectTarget = "blocked/blocked.html";
         }
 
-        //youtube checker
+        //youtube block page
         if (url.includes(YOUTUBE_DOMAIN) && data.blockYoutube) {
-            shouldBlock = true;
+            redirectTarget = "blocked/youtube-blocked.html";
         }
 
-        if (shouldBlock) {
-            chrome.tabs.update(tabId, { url: chrome.runtime.getURL("blocked/blocked.html") });
+        //redirect
+        if (redirectTarget) {
+            chrome.tabs.update(tabId, { url: chrome.runtime.getURL(redirectTarget) });
         }
     });
 }
