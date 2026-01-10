@@ -2,6 +2,14 @@
     "manifest_version": 3,
     "name": "SolveSolo",
     "version": "1.0",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "solvesolo@oipi.com",
+        "data_collection_permissions": {
+          "required": ["none"]
+        }
+      }
+    },
     "description": "Blocks AI sites while practicing DSA",
     "permissions": [
       "tabs",
