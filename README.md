@@ -37,13 +37,11 @@ The following domains are inaccessible during an active session:
 * ai.baidu.com
 * youtube.com (Optional)
 
-## Installation for Firefox
+## Installation 
 
-1.  Download or clone the repository to your local machine.
-2.  Open Firefox and navigate to `about:debugging`.
-3.  Click on **This Firefox** in the sidebar.
-4.  Click the **Load Temporary Add-on...** button.
-5.  Navigate to the directory containing the extension files and select the `manifest.json` file.
+You can install SolveSolo directly from the Firefox Add-ons Store:
+
+**[Download SolveSolo for Firefox](https://addons.mozilla.org/en-US/firefox/addon/solvesolo/)**
 
 ## Configuration
 
