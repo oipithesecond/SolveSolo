@@ -1,5 +1,7 @@
 # SolveSolo
 
+[![Get it on Firefox](https://img.shields.io/badge/Get%20it%20on-Firefox-FF7139?style=for-the-badge&logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/solvesolo/)
+
 SolveSolo is a browser extension designed to help developers practice Data Structures and Algorithms (DSA) independently by blocking access to AI assistance tools and distractions during problem-solving sessions.
 
 ## Description
@@ -14,6 +16,14 @@ The extension automatically activates a "Focus Mode" when you visit supported co
 * **Customizable Settings:** Users can configure the block duration (default 20 minutes) and the penalty duration (default 5 minutes) via the options page.
 * **YouTube Blocking:** Optional setting to block YouTube during focus sessions.
 * **Access Denied Redirect:** Attempts to access blocked sites redirect to a specific "Access Denied" page with a button to return to the coding problem.
+
+## Screenshots
+
+![Initial Blocker that starts everytime you open a question](store_assets/pic1.png)
+![Options page to customize your blocking settings](store_assets/pic2.png)
+![Penalty timers that encourages you to debug your error with AI assistance](store_assets/pic3.png)
+![Works with both LeetCode and GeeksForGeeks!](store_assets/pic4.png)
+![Opening all major LLMs redirect to this](store_assets/pic5.png)
 
 ## Supported Platforms
 
