@@ -19,11 +19,11 @@ The extension automatically activates a "Focus Mode" when you visit supported co
 
 ## Screenshots
 
-![Initial Blocker that starts everytime you open a question](store_assets/pic1.png)
-![Options page to customize your blocking settings](store_assets/pic2.png)
-![Penalty timers that encourages you to debug your error with AI assistance](store_assets/pic3.png)
-![Works with both LeetCode and GeeksForGeeks!](store_assets/pic4.png)
-![Opening all major LLMs redirect to this](store_assets/pic5.png)
+![Initial Blocker that starts everytime you open a question](SolveSolo_firefox/store_assets/pic1.png)
+![Options page to customize your blocking settings](SolveSolo_firefox/store_assets/pic2.png)
+![Penalty timers that encourages you to debug your error with AI assistance](SolveSolo_firefox/store_assets/pic3.png)
+![Works with both LeetCode and GeeksForGeeks!](SolveSolo_firefox/store_assets/pic4.png)
+![Opening all major LLMs redirect to this](SolveSolo_firefox/store_assets/pic5.png)
 
 ## Supported Platforms
 
