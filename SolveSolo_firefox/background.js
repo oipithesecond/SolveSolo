@@ -17,6 +17,9 @@ const AI_DOMAINS = [
 ];
 const YOUTUBE_DOMAIN = "youtube.com";
 
+//track redirects in progress to prevent race conditions
+const redirectingTabs = new Set();
+
 //listener for trigger Sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url) {
@@ -35,11 +38,14 @@ chrome.tabs.onRemoved.addListener((tabId) => {
             chrome.storage.local.set({ activeSessions: sessions });
         }
     });
+    //clean up redirect tracking
+    redirectingTabs.delete(tabId);
 });
 
 //blocker for AI sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (tab.url) {
+    //only check on loading status to catch navigation early and prevent multiple checks
+    if (changeInfo.status === 'loading' && tab.url) {
         checkAndBlock(tabId, tab.url);
     }
 });
@@ -78,6 +84,19 @@ function activateTimer(tabId) {
 
 //check if blocked
 function checkAndBlock(tabId, url) {
+    //exclude extension URLs and blocked pages to prevent redirect loops
+    if (url.startsWith('moz-extension://') || url.startsWith('chrome-extension://')) {
+        return;
+    }
+    if (url.includes('blocked.html') || url.includes('youtube-blocked.html')) {
+        return;
+    }
+
+    //prevent concurrent redirects for the same tab
+    if (redirectingTabs.has(tabId)) {
+        return;
+    }
+
     chrome.storage.local.get(['unlockTime', 'blockYoutube'], (data) => {
         const now = Date.now();
         const unlockTime = data.unlockTime || 0;
@@ -99,7 +118,13 @@ function checkAndBlock(tabId, url) {
 
         //redirect
         if (redirectTarget) {
-            chrome.tabs.update(tabId, { url: chrome.runtime.getURL(redirectTarget) });
+            redirectingTabs.add(tabId);
+            chrome.tabs.update(tabId, { url: chrome.runtime.getURL(redirectTarget) }, () => {
+                //clear redirect flag after redirect completes or fails
+                setTimeout(() => {
+                    redirectingTabs.delete(tabId);
+                }, 1000);
+            });
         }
     });
 }
