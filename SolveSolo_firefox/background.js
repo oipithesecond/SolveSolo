@@ -44,11 +44,12 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
 //blocker for AI sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    //only check on loading status to catch navigation early and prevent multiple checks
-    if (changeInfo.status === 'loading' && tab.url) {
+    // Handle both full page loads and SPA-style URL changes
+    if (tab.url && (changeInfo.status === 'loading' || changeInfo.url)) {
         checkAndBlock(tabId, tab.url);
     }
 });
+    
 
 //activate focus mode
 function activateTimer(tabId) {
