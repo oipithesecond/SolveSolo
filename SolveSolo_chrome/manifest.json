@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "SolveSolo",
+  "version": "1.0",
+  "description": "Focus on coding problems by blocking AI and distractions.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://leetcode.com/*",
+    "*://geeksforgeeks.org/*",
+    "*://www.geeksforgeeks.org/*",
+    "*://chatgpt.com/*",
+    "*://claude.ai/*",
+    "*://gemini.google.com/*",
+    "*://deepseek.com/*",
+    "*://perplexity.ai/*",
+    "*://copilot.microsoft.com/*",
+    "*://qwen.ai/*",
+    "*://mistral.ai/*",
+    "*://meta.ai/*",
+    "*://grok.com/*",
+    "*://ai.baidu.com/*",
+    "*://youtube.com/*",
+    "*://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://leetcode.com/*",
+        "*://geeksforgeeks.org/*",
+        "*://www.geeksforgeeks.org/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "Popup/popup.html",
+    "default_icon": {
+      "128": "icons/solvesolo128.png"
+    }
+  },
+  "options_page": "Options/options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "Blocked/blocked.html",
+        "Blocked/blocked.css",
+        "Blocked/blocked.js",
+        "Youtube/youtube-blocked.html",
+        "Youtube/youtube-blocked.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
