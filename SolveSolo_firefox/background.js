@@ -1,6 +1,7 @@
 //config
 const TRIGGER_DOMAINS = ["leetcode.com/problems",
                          "geeksforgeeks.org/problems",
+                         "leetcode.com/contest"
                         ];
 const AI_DOMAINS = [
     "chatgpt.com",
